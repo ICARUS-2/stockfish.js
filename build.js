@@ -290,23 +290,20 @@ function getNetPaths()
     } else {
         filename = "evaluate.h";
     }
+
+    // Read the C++ header file
     var code = fs.readFileSync(p.join(srcPath, filename), "utf8");
     var match;
     var nets = [];
-    
-    match = code.match(/\#define EvalFileDefaultNameBig "([^"]+)"/);
+
+    // Updated Regex for Stockfish 19's single network macro
+    match = code.match(/\#define EvalFileDefaultName "([^"]+)"/);
     if (match) {
         nets.push({path: match[1], type: "Big"});
     } else {
-        console.error("Cannot find EvalFileDefaultNameBig path");
+        console.error("Cannot find EvalFileDefaultName path");
     }
-    match = code.match(/\#define EvalFileDefaultNameSmall "([^"]*)"/);
-    if (match) {
-        nets.push({path: match[1], type: "Small"});
-    } else {
-        console.error("Cannot find EvalFileDefaultNameSmall path");
-    }
-    
+
     return nets;
 }
 
