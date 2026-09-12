@@ -14,6 +14,8 @@ using namespace Stockfish;
 UCIEngine* uciP; // Create a global pointer to the UCI object
 #ifndef __EMSCRIPTEN_SINGLE_THREADED__
 bool ready = false;
+#else
+bool ready = true;
 #endif
 #endif
 
