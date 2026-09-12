@@ -291,19 +291,22 @@ function getNetPaths()
         filename = "evaluate.h";
     }
 
-    // Read the C++ header file
+// Read the C++ header file
     var code = fs.readFileSync(p.join(srcPath, filename), "utf8");
     var match;
     var nets = [];
 
-    // Updated Regex for Stockfish 19's single network macro
-    match = code.match(/\#define EvalFileDefaultName "([^"]+)"/);
-    if (match) {
-        nets.push({path: match[1], type: "Big"});
-    } else {
-        console.error("Cannot find EvalFileDefaultName path");
-    }
+    // Check for lite-specific macro names if building lite/ultra-lite
+    var macroName = (params["ultra-lite"] || params.lite) ? "EvalFileDefaultNameBig" : "EvalFileDefaultName";
+    var regex = new RegExp("#define\\s+" + macroName + '\\s+"([^"]+)"');
 
+    match = code.match(regex);
+        if (match && match[1]) {
+            var netType = (params["ultra-lite"] || params.lite) ? "Lite" : "Big";
+            nets.push({path: match[1], type: netType});
+        } else {
+            console.error("Cannot find network path for macro: " + macroName);
+        }
     return nets;
 }
 
